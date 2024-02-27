@@ -2,6 +2,7 @@ behave==1.2.6
 behavex==3.2.0
 configobj==5.0.8
 csscompressor==0.9.5
+dotmap==1.3.30
 Faker==23.2.1
 greenlet==3.0.3
 htmlmin==0.1.12
