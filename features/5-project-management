@@ -1,0 +1,116 @@
+Feature: Project Management
+
+    Background:
+        Given a Cloud Free user is on the "Your Workspace" page
+
+    Scenario: Renaming a project when the project is loaded
+        Given the user has a project open
+        When the user renames the project to "Renamed Project" from the project's page
+        And refreshes the page
+        Then the project should still be named "Renamed Project"
+
+    Scenario: Checking the RAM button in the rStudioHeader
+        Given the user has a project open
+        When the user clicks the "RAM Gauge" on the right side of the rStudioHeader
+        Then the Settings panel should be displayed
+        And the contents of the "Resources" tab should be displayed: "USAGE, RAM, COMPUTE, BACKGROUND EXECUTION LIMIT"
+
+    Scenario: Checking the Settings button in the rStudioHeader
+        Given the user has a project open
+        When the user clicks the "Settings button" on the right side of the rStudioHeader
+        Then the Settings panel should be displayed
+        And the contents of the "Info" tab should be displayed: "NAME & AUTHOR, DESCRIPTION, TYPE, DETAILS"
+
+    Scenario: Checking the System Image
+        Given the Settings panel is displayed
+        When the user clicks the "System" button on the Settings panel
+        And the contents of the "System" tab should be displayed: "Operating System"
+
+    Scenario: A private project cannot be shared
+        Given the user has opened a project which is "Private"
+        When the user clicks the "Share Link" button in the 3-dot menu
+        Then a modal dialog should explain that 'Before you can share a link to it, go to the Access panel in Settings and change who can view the content to "Everyone".'
+    # Note: The Access panel in Settings does NOT have an option for "Everyone".  The equivalent option is "All Posit Cloud Users".  This modal should be updated.
+
+    Scenario: A public project can be shared
+        Given the user has opened a project which is "Private"
+        When the user sets the access level to "All Posit Cloud Users" using the Access panel in Settings
+        And the user clicks the "Share Link" button in the 3-dot menu
+        Then a modal dialog should request "Email address to send the link to"
+
+    Scenario: A Share Link can be sent via email
+        Given the "Share Link" modal dialog is displayed
+        When the user sends the link to another user's email address
+        Then the other user should receive an email message with a link to access the shared project
+
+    Scenario: A shared project can be opened using a link sent via email
+        Given a Posit Cloud user has received an email message with a link to a shared project
+        When the user clicks the link to the shared project in the email message
+        Then the shared project should load in the browser
+        And a "TEMPORARY COPY" message should appear in the rStudioHeader
+        And a "Save a Permanent Copy" button should appear in the rStudioHeader
+
+    Scenario: A "TEMPORARY COPY" of a project can be saved as a "Permanent Copy"
+        Given a user has opened a temporary copy of a shared project
+        When the user clicks the "Save a Permanent Copy" button
+        Then the project should reload in the browser
+        And there should no longer be a "TEMPORARY COPY" message in the rStudioHeader
+        And there should no longer be a "Save a Permanent Copy" button in the rStudioHeader
+        And the saved project should be included in the list of projects shown in "Your Content"
+
+    Scenario: A project can be archived
+        Given at least one project is listed on the "Your Content" page
+        When a project is archived
+        Then the project should not be listed on the "Your Content" page
+        And the project should be listed on the "Archive" page
+
+    Scenario: A project can be restored from the archive
+        Given at least one project is listed on the "Archive" page
+        When a project is restored from the Archive
+        Then the project should not be listed on the "Archive" page
+        And the project should be listed on the "Your Content" page
+
+    Scenario: A project can be copied
+        Given at least one project with "All Posit Cloud Users" access is listed on the "Your Content" page
+        When a project with "All Posit Cloud Users" access is copied
+        Then a new copy of the project should load in the browser
+        And the "Your Content" page should show two projects with the name of the copied project
+        And the new copy of the project should have an access level of "Private"
+
+    Scenario: A project can be renamed from the "Your Content" page
+        Given at least one project is listed on the "Your Content" page
+        When a project is renamed using the 3-dot menu for that project on the "Your Content" page
+        Then the name of the project in the list on the "Your Content" page will be updated immediately
+
+    Scenario Outline: The project list can be sorted by <sort_method>
+        Given there are at least two projects listed on the "Your Content" page
+        And the projects have been renamed so that a project named "A" was created before a project named "Z"
+        When the projects on the "Your Content" page are sorted by <sort_method>
+        Then the project named "A" will come <before_or_after> the project named "Z"
+        Examples:
+            | sort_method         | before_or_after |
+            | Name (ASC)          | before          |
+            | Created Date (DESC) | after           |
+
+    Scenario: A project can be moved to the trash
+        Given at least one project is listed on the "Your Content" page
+        When a project is deleted
+        Then the project should not be listed on the "Your Content" page
+        And the project should be listed on the "Trash" page
+
+    Scenario: A project can be restored from the trash
+        Given at least one project is listed on the "Trash" page
+        When a project is restored from the Trash
+        Then the project should not be listed on the "Trash" page
+        And the project should be listed on the "Your Content" page
+
+    Scenario: A project can be moved from the Trash to the Archive
+        Given at least one project is listed on the "Trash" page
+        When a project is moved to the Archive from the Trash
+        Then the project should not be listed on the "Trash" page
+        And the project should be listed on the "Archive" page
+
+    Scenario: The Trash can be emptied
+        Given at least one project is listed on the "Trash" page
+        When the user clicks the "Empty Trash" button
+        Then there should be 0 projects listed on the "Trash" page
