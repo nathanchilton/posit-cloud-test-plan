@@ -21,7 +21,7 @@ class LoginForm:
     INPUT_EMAIL = "input[name='email']"  # CSS selector
     INPUT_PASSWORD = "input[name='password']"  # CSS selector
     CONTINUE_BUTTON = "text=Continue"  # Searching by text content
-    LOGIN_BUTTON = "//button[contains(., 'Log In')]"  # XPath selector
+    LOGIN_BUTTON = "//button[@type='submit']"  # XPath selector
     POSIT_CLOUD_LINK = "a.cloud"  # CSS selector
 
     def load(self):
