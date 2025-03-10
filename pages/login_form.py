@@ -22,7 +22,7 @@ class LoginForm:
     INPUT_PASSWORD = "input[name='password']"  # CSS selector
     CONTINUE_BUTTON = "text=Continue"  # Searching by text content
     LOGIN_BUTTON = "//button[@type='submit']"  # XPath selector
-    POSIT_CLOUD_LINK = "a.cloud"  # CSS selector
+    POSIT_CLOUD_LINK = "text=Posit Cloud"  # text selector
 
     def load(self):
         self.page.goto(self.URL)
